@@ -291,11 +291,62 @@ sizeof (type)，给出类型名，sizeof expr，给出表达式
 * const_cast：只能改变运算对象的底层const，一般可用于去除const性质。 const char *pc; char *p = const_cast<char*>(pc)
 
 
-## constexpr函数
-指能用于常量表达式的函数。constexpr int new_sz() {return 42;}
+## constexpr
 
-函数的返回类型及所有形参类型都要是字面值类型。
+存在两类 constexpr 对象：
+* constexpr 变量
+* constexpr 函数
 
+一个 constexpr 变量是一个编译时完全确定的常数。一个 constexpr 函数至少对于某一组实参可以在编译期间产生一个编译期常数。
+
+注意一个 constexpr 函数不保证在所有情况下都会产生一个编译期常数（因而也是可以作为普通函数来使用的）。编译器也没法通用地检查这点。编译器唯一强制的是：
+* constexpr 变量必须立即初始化
+* 初始化只能使用字面量或常量表达式，后者不允许调用任何非 constexpr 函数
+
+
+	#include <array>
+	
+	constexpr int sqr(int n)
+	{
+	  return n * n;
+	}
+	
+	int main()
+	{
+	  constexpr int n = sqr(3);
+	  std::array<int, n> a;
+	  int b[n];
+	}
+
+
+要检验一个 constexpr 函数能不能产生一个真正的编译期常量，可以把结果赋给一个 constexpr 变量。成功的话，我们就确认了，至少在这种调用情况下，我们能真正得到一个编译期常量。
+
+
+	constexpr int factorial(int n)
+	{
+	  if (n == 0) {
+	    return 1;
+	  } else {
+	    return n * factorial(n - 1);
+	  }
+	}
+	
+	
+	
+	int main()
+	{
+	  constexpr int n = factorial(10);
+	  printf("%d\n", n);
+	}
+
+
+一个 constexpr 变量仍然是 const 常类型。
+
+下面这个表达式里的 const 也是不能缺少的：
+
+
+	constexpr int a = 42;
+	constexpr const int& b = a;
 
 
 ## union
