@@ -74,6 +74,7 @@ vector 会试图把元素“移动”到新的内存区域。vector 通常保证
 
 ## list
 因为某些标准算法在 list 上会导致问题，list 提供了成员函数作为替代，包括下面几个：
+
 * merge
 * remove
 * remove_if
@@ -81,6 +82,7 @@ vector 会试图把元素“移动”到新的内存区域。vector 通常保证
 * sort
 * unique
 
+代码：
 
 	#include "output_container.h"
 	#include <iostream>
